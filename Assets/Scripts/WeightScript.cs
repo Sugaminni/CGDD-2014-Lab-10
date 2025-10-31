@@ -1,27 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeightScript : MonoBehaviour {
+public class WeightScript : MonoBehaviour
+{
+    public bool isContainer = false;
+    public float baseWeightKg = 0f;
 
-	// The weight of this item (by itself)
-	public float weight;
-	// Whether or not this is a container/crate
-	public bool isContainer;
+	// Calculates the total weight of this object, including all nested child objects if it is a container
+	public float CalculateWeight()
+	{
+		float total = baseWeightKg;
 
-	// Recursively calculate the weight of the object
-	public float CalculateWeight() {
+		if (isContainer)
+		{
+			foreach (Transform child in transform)
+			{
+				WeightScript ws = child.GetComponent<WeightScript>();
+				if (ws != null)
+				{
+					total += ws.CalculateWeight();
+				}
+			}
+		}
 
-		// If this is NOT a container, just return your weight
-
-		// Otherwise 
-		//  1) Print out your name "this.name"
-		//  2) create a "totalWeight" variable and assign it your weight
-		//  3) Loop through all the (child) transforms for this object
-		//     3.1) call the child's CalculateWeight() method and add it to the totalWeight
-		//     3.2) It's a good idea to print out the name of this object as well as the weight
-		//  4) return the totalWeight
-
-		// Remove the line below - it's just there to compile
-		return this.weight;
+		return total;
 	}
 }
